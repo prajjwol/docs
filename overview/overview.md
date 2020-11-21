@@ -75,7 +75,3 @@ Akash relies on a blockchain where a set of validators vote on proposals. Each p
 
 Providers on Akash stake tokens to subsidize operating and capital expenditures. Stakers are rewarded proportional to the number of tokens staked, the length of lockup time, and the overall tokens staked in the system. Lock up times can vary anywhere from one month to one year. Flexibility in lockup encourages stakers that stake for shorter periods \(bear markets\), in a self-adjusting inflationary system that is designed to optimize for lower price pressure during bear markets.
 
-### Reserve
-
-Fees on Akash can be settled using a multitude of currencies, however, the market order book uses Akash Token \(_AKT_\) as the reserve currency of the ecosystem. AKT provides a novel settlement option to lock in an exchange rate between AKT and the settlement currency. This way, providers and tenants are protected from the price volatility of AKT expected to result from its low liquidity. In this section, we also present a mechanism “Transaction Ordering using Consensus Weighted Median” to establish exchange rates without the need for an oracle.
-
