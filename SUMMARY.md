@@ -1,6 +1,7 @@
 # Table of contents
 
-* [What is Akash?](overview/overview.md)
+* [Introduction](README.md)
+* [What is Akash?](overview.md)
 
 ## Wallet Guides
 
@@ -11,7 +12,7 @@
 
 * [Validators Overview](validator-guides/overview.md)
 * [Running a Local Node](validator-guides/local.md)
-* [Joining the Mainnet](validator-guides/create-a-testnet-validator/README.md)
+* [Joining the Mainnet](validator-guides/create-a-testnet-validator.md)
 
 ## Usage
 
