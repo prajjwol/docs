@@ -14,7 +14,7 @@ Before you can access your Akash wallet, please ensure the "Cosmos" app is insta
 * Open Ledger Live on your workstation.
 * Enable "Developer Mode" by accessing the "Settings" on Ledger Live.
 
-![](../.gitbook/assets/1-dev-mode.png)
+![](../.gitbook/assets/1-dev-mode%20%281%29%20%281%29.png)
 
 * Install "Cosmos" from Ledger Manager" \(from the sidebar menu\).
 
@@ -26,19 +26,19 @@ In this section, you will set up your non-custodial Akash Wallet.
 
 * Visit the [Akash Lunie Wallet](https://app.lunie.io/akash-testnet) web app from your browser. You should see a menu option that looks similar to the image below.
 
-![](../.gitbook/assets/3.png)
+![](../.gitbook/assets/3%20%281%29.png)
 
 * Select the "Ledger Nano" option.
 
-![](../.gitbook/assets/4-signin.png)
+![](../.gitbook/assets/4-signin%20%281%29.png)
 
 * Click "Sign In" and permit your browser to access "Nano."
 
-![](../.gitbook/assets/5-permit.png)
+![](../.gitbook/assets/5-permit%20%281%29.png)
 
 * You should see a screen like below once you successfully authenticate using your Ledger. 
 
-![](../.gitbook/assets/6-copy-addr.png)
+![](../.gitbook/assets/6-copy-addr%20%281%29.png)
 
 * Click on the "Copy" icon on top right corner \(next to Show on Ledger\) to copy your address to the clipboard. It should look something like `akash1r72yxwn4w82pjmqyf7sy3544qh88falcelk6t5`
 
@@ -50,5 +50,5 @@ Lets try sending and receving a few test tokens from Akash Testnet.
 * Paste your Public Key in the address bar
 * You should see 1 AKT in your wallet on Ledger
 
-![](../.gitbook/assets/7-test.png)
+![](../.gitbook/assets/7-test%20%281%29%20%281%29.png)
 

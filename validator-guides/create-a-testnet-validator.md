@@ -1,6 +1,6 @@
 # Joining the Mainnet
 
-Before setting up your validator node, make sure you've already gone through the [Full Node Setup]() guide.
+Before setting up your validator node, make sure you've already gone through the [Full Node Setup](create-a-testnet-validator.md) guide.
 
 > NOTE: it is not required to create a validator on Akash testnets unless specified in a challenge or otherwise. The akash team runs a centralized validator set to enable for easy and consistent testnet operations for developers trying out the platform for the first time.
 
@@ -134,5 +134,5 @@ You may notice that your voting power is less than it used to be. That's because
 
 ### Problem \#2: My `akashd` crashes because of `too many open files`
 
-The default number of files Linux can open \(per-process\) is `1024`. `akashd` is known to open more than `1024` files. This causes the process to crash. A quick fix is to run `ulimit -n 4096` \(increase the number of open files allowed\) and then restart the process with `akashd start`. If you are using `systemd` or another process manager to launch `akashd` this may require some configuration at that level. See the [`systemd` configuration doc]() for details on how to configure `systemd` to aleviate this issue.
+The default number of files Linux can open \(per-process\) is `1024`. `akashd` is known to open more than `1024` files. This causes the process to crash. A quick fix is to run `ulimit -n 4096` \(increase the number of open files allowed\) and then restart the process with `akashd start`. If you are using `systemd` or another process manager to launch `akashd` this may require some configuration at that level. See the [`systemd` configuration doc](create-a-testnet-validator.md) for details on how to configure `systemd` to aleviate this issue.
 
