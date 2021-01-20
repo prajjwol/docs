@@ -24,6 +24,7 @@
 ## Documentation
 
 * [Stack Definition Language](/sdl/README.md)
+* [Akash CLI reference](/cli/akash.md)	
 
 ## Testnet Challenges
 
