@@ -34,7 +34,20 @@ node to act as a validator. More than one provider can access the same RPC node.
 The setup of a Kubernetes cluster is the responsibility of whoever sets up a provider
 on the Akash network. This section of this document provides best practices and 
 recommendations for setting up a Kubernetes cluster.  This document is not a 
-comprehensive guide to operating a Kubernetes cluster. 
+comprehensive guide to operating a Kubernetes cluster.
+
+The general set of actions which must be carried out to setup a Kubernetes cluster for
+a provider is 
+
+1. Clone the kubespray project
+1. Setup your Ansible inventory for the nodes that makeup the cluster
+1. Run the provisioning using able
+1. Retrieve the Kubernetes configuration file so that the cluster can be accessed
+1. Add Akash's Custom Resource Definitions to Kubernetes
+1. Add the NGINX Ingress controller
+
+At ths point you would be left with a Kubernetes cluster that is ready to be a provider
+but not yet on the network.
 
 The recommended method for setting up a Kubernetes cluster is to use the 
 [kubespray](https://github.com/kubernetes-sigs/kubespray) project. This project
@@ -186,6 +199,7 @@ When the cluster is complete, on the master node there should be a file stored a
 this file as a secret password which you do not share. A copy of this file must be used
 to configure the Akash provider. 
 
+
 ### Known issues
 
 When the above example is followed Kubespray uses Calico for the networking of Kubernetes.
@@ -211,6 +225,52 @@ To increase the pods per node limit, 3 steps need to be taken
 3. Increase `kube_service_addresses` since more services are expected to be running.
 
 These values are configured in the [example configuration here](akash-main/inventory/akash-provider-sample/group_vars/k8s-cluster/k8s-cluster.yml)
+
+TODO - add notes about adding CRD
+
+### Add the Akash Custom Resouce Definition
+
+Akash uses a custom resource definition to store each deployment in Kubernetes. You must load this CRD by downloading the following file 
+
+Files:
+1. [https://raw.githubusercontent.com/ovrclk/akash/master/pkg/apis/akash.network/v1/crd.yaml]
+
+and applying it by using the `kubectl` command like this 
+
+```
+kubectl apply -f ./crd.yaml
+```
+
+### Add networking configuration 
+
+Akash supplies networking configuration which must be applied to the Kubernetes cluster. You must load this file by downloading it and applying it 
+
+Files: 
+1. [https://raw.githubusercontent.com/ovrclk/akash/master/_docs/kustomize/networking/network-policy-default-ns-deny.yaml]
+
+
+You can apply it using the `kubectl` command like this 
+
+
+```
+kubectl apply -f ./network-policy-default-ns-deny.yaml
+```
+
+
+### Create Kubernetes Ingress controller 
+
+Akash requires that a Kubernetes ingress controller be created. You must load this file by downloading it and applying it 
+
+Files:
+1. [https://raw.githubusercontent.com/ovrclk/akash/master/_run/ingress-nginx.yaml]
+
+
+You can apply it using the `kubectl` command like this 
+
+
+```
+kubectl apply -f ./ingress-nginx.yaml
+```
 
 # Provider setup & configuration
 
@@ -238,6 +298,108 @@ This section documents configuration you may want to consider customizing when s
 You may choose to run the Akash provider process via any means you choose. However, Akash has already
 built Ansible playbooks to help the end user with the steps necessary to run the Akash provider.
 
+## Public hostname configuration
+
+There are 3 important public hostnames that a provider must configure.
+
+The **provider host** is the publicly accessible hostname of the provider. This is specified in the configuration
+file using the `host` key when `akash tx provider create` or `akash tx provider update` is ran. This value
+is stored on the blockchain. It is used whenever a lease owner needs to communicate directly when the provider
+for things such as sending a manifest or getting a lease status.
+
+The **cluster ingress host** is the publicly accessible hostname of the Kubernetes cluster. The Kubernetes cluster
+hosts an Ingress Controller, which is one way that leases in the cluster may be exposed to the outside world.
+At this time only HTTP is supported for the Ingress Controller. The hostname should resolve to an IP 
+which directs traffic to the Kubernetes ingress controller IP on your network. This value is specified using the 
+`--deployment-ingress-domain` switch. It is not stored on the blockchain.
+
+The **cluster public hostname** is the publicly accessible hostname of the Kubernetes cluster. Is is not
+required, nor is it desirable to expose an entire cluster to the internet. The Kubernetes cluster
+supports a feature called a "NodePort" service. This allows UDP and TCP traffic to be forwarded from the
+cluster directly to a container on any node in the cluster. By default Kubernetes uses the port range
+`30000-32767` for this. It is recommended that traffic from the internet only be able to access this port range.
+This hostname should be configured to resolve to an IP that directs traffic to any of the nodes in the Kubernetes cluster. 
+Kubernetes automatically routes the IP traffic to the correct container. This value is set using the 
+`--cluster-public-hostname` command line  switch. It _may_ be different that the **cluster ingress host** but 
+that is not required. This value is not stored on the blockchain.
+
+### Blocking hostnames
+
+A Kubernetes ingress controller is used to expose HTTP traffic from a lease to the outside world. By default,
+a lease may request any hostname it wants. This hostname is published in the DNS entries maintained by
+Kubernetes. It may be desirable to block some domains from being used by a lease. 
+
+The command line switch `--deployment-blocked-hostnames` command line switch allows blocking a domain. To
+block a single domain, specify it exactly. For example `--deployment-blocked-hostnames=akash.network` blocks
+a lease from requesting a hostname of `akash.network`. To block a domain and all subdomains, precede the hostname
+with the dot character. For example, `--deployment-blocked-hostnames=.bobsdeficloud.com` would block
+`bobsdeficloud.com`, `www.bobsdeficloud.com` as well as any other subdomains.
+
+This command line switch may be given any number of times to install mutliple blocks.
+
+Kubernetes cluster hostname
+Kubernetes ingress hostname
+Provider hostname
+
+## Creating the provider on the blockchain
+
+A provider is created on the blockchain by submitting two transactions
+
+### Create the provider
+
+You must issue a transaction to the blockchain to create a record of the provider. 
+
+This is done by running the following command
+
+`akash tx provider create provider.yaml`
+
+The file `provider.yaml` must be created in the present directory. It must at a minimum containn the following information:
+
+```
+host: provider.hostname.com
+```
+
+Where `host` specifies the hostname of your provider.
+
+You may optionally declare a list of attributes associated with your provider by adding the following information to `provider.yaml`
+
+```
+attributes:
+  - key: region
+    value: us-west
+  - key: host
+    value: nameOfYourOrganization
+```
+
+### Create the provider certificate
+
+You must issue a transaction to the blockchain to create a certificate associated with your provider.
+
+`akash tx cert create server`
+
+## Mandatory provider configuration
+
+You must configure the following parameters on the command line when starting the provider
+
+* `--home`
+* `--chain-id`
+* `--keyring-backend` - always set to `test`
+* `--from`
+* `--fees`
+
+You must set the following parameters, either by using the command line options or the equivalent environmental variable.
+
+* `--kubeconfig`
+* `--cluster-k8s` - always set to true
+* `--deployment-ingress-domain-name`
+* `--deployment-ingress-static-hosts` - always set to true
+* `--cluster-public-hostname`
+* `--node`
+* `--from`
+
+The provider must have a wallet accessible under the directory specified by `--home` and the key under it specified by the name given to 
+the `--from` parameter must be funded.
+
 ## Using Ansible 
 
 The Ansible project used to configure Akash providers is part of the `ovrclk/operations` project and is stored
@@ -247,6 +409,7 @@ https://github.com/ovrclk/operations/tree/master/infra
 
 The first step is to define an inventory file with the host that the Akash provider runs on. The inventory 
 below defines the minimum set of values needed to configure an Akash provider.
+
 
 ```
 ---
@@ -306,8 +469,6 @@ ansible-playbook -i inventory/mydefprovider.yaml -b -v --private-key=~/.ssh/id_r
 ```
 
 Note that during provisioning the keys from your wallet and the Kubernetes configuration are copied to the remote host.
-
--- TODO -- graphic showing where each hostname points
 
 ### Checking that the provider has started 
 
@@ -436,41 +597,4 @@ else:
 
 ```
 
-### Public hostname configuration
 
-There are 3 important public hostnames that a provider must configure.
-
-The **provider host** is the publicly accessible hostname of the provider. This is specified in the configuration
-file using the `host` key when `akash tx provider create` or `akash tx provider update` is ran. This value
-is stored on the blockchain. It is used whenever a lease owner needs to communicate directly when the provider
-for things such as sending a manifest or getting a lease status.
-
-The **cluster ingress host** is the publicly accessible hostname of the Kubernetes cluster. The Kubernetes cluster
-hosts an Ingress Controller, which is one way that leases in the cluster may be exposed to the outside world.
-At this time only HTTP is supported for the Ingress Controller. The hostname should resolve to an IP 
-which directs traffic to the Kubernetes ingress controller IP on your network. This value is specified using the 
-`--deployment-ingress-domain` switch. It is not stored on the blockchain.
-
-The **cluster public hostname** is the publicly accessible hostname of the Kubernetes cluster. Is is not
-required, nor is it desirable to expose an entire cluster to the internet. The Kubernetes cluster
-supports a feature called a "NodePort" service. This allows UDP and TCP traffic to be forwarded from the
-cluster directly to a container on any node in the cluster. By default Kubernetes uses the port range
-`30000-32767` for this. It is recommended that traffic from the internet only be able to access this port range.
-This hostname should be configured to resolve to an IP that directs traffic to any of the nodes in the Kubernetes cluster. 
-Kubernetes automatically routes the IP traffic to the correct container. This value is set using the 
-`--cluster-public-hostname` command line  switch. It _may_ be different that the **cluster ingress host** but 
-that is not required. This value is not stored on the blockchain.
-
-### Blocking hostnames
-
-A Kubernetes ingress controller is used to expose HTTP traffic from a lease to the outside world. By default,
-a lease may request any hostname it wants. This hostname is published in the DNS entries maintained by
-Kubernetes. It may be desirable to block some domains from being used by a lease. 
-
-The command line switch `--deployment-blocked-hostnames` command line switch allows blocking a domain. To
-block a single domain, specify it exactly. For example `--deployment-blocked-hostnames=akash.network` blocks
-a lease from requesting a hostname of `akash.network`. To block a domain and all subdomains, precede the hostname
-with the dot character. For example, `--deployment-blocked-hostnames=.bobsdeficloud.com` would block
-`bobsdeficloud.com`, `www.bobsdeficloud.com` as well as any other subdomains.
-
-This command line switch may be given any number of times to install mutliple blocks.
