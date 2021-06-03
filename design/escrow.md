@@ -13,7 +13,7 @@ Escrow accounts are necessary in akash for two primary reasons:
 
    from the tenant \(deployment owner\) to the provider \(lease holder\)
 
-   is due.  Performance and security considerations prohibit the
+   is due. Performance and security considerations prohibit the
 
    naive approach of transferring tokens on every block.
 

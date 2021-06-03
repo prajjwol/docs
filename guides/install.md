@@ -28,8 +28,8 @@ Install `akash` daemon using homebrew:
 
 ```text
 brew tap ovrclk/tap
-brew install akash
-brew link akash --force
+brew install akash-edge
+brew link akash-edge --force
 ```
 
 Once installed, verify the installation by running `akash version`. Compare that with the version for the network you plan on connecting to:
@@ -47,7 +47,7 @@ Download the archive for your system from the [release page](https://github.com/
 Alternatively, install the latest version via [`godownloader`](https://github.com/goreleaser/godownloader) with:
 
 ```bash
-curl https://raw.githubusercontent.com/ovrclk/akash/master/godownloader.sh | sh -s -- "v$AKASH_VERSION"
+curl https://raw.githubusercontent.com/ovrclk/akash/master/godownloader.sh | sh -s -- "$AKASH_VERSION"
 ```
 
 The final step is to make sure that the akash binaries are available in your shell `PATH`.[This page](https://stackoverflow.com/questions/14637979/how-to-permanently-set-path-on-linux-unix) contains instructions for setting the PATH on Linux.
@@ -61,12 +61,12 @@ Installing Akash suite from source
 ```text
 $ go get -d github.com/ovrclk/akash
 $ cd $GOPATH/src/github.com/ovrclk/akash
-$ git checkout "v$AKASH_VERSION"
+$ git checkout "$AKASH_VERSION"
 $ make deps-install
 $ make install
 ```
 
-Akash is developed and tested with [golang 1.16+](https://golang.org/). Building requires a working [golang](https://golang.org/) installation, a properly set `GOPATH`, and `$GOPATH/bin` present in `$PATH`.
+Akash is developed and tested with [golang 1.15+](https://golang.org/). Building requires a working [golang](https://golang.org/) installation, a properly set `GOPATH`, and `$GOPATH/bin` present in `$PATH`.
 
 Once you have the dependencies properly setup, download and build `akash` using `make install`
 {% endtab %}
