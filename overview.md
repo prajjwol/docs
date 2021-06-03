@@ -22,7 +22,7 @@ To support running workloads on procured resources, Akash includes a peer-to-pee
 
 Workloads in Akash are defined as Docker containers. Docker containers allow for highly-isolated and configurable execution environments, and are already part of many cloud-based deployments today.
 
-![Illustration of on-chain and off-chain interactions amongst various participants in the Akash network](.gitbook/assets/overview%20%284%29%20%284%29%20%284%29.svg)
+![Illustration of on-chain and off-chain interactions amongst various participants in the Akash network](.gitbook/assets/overview%20%284%29%20%284%29%20%286%29%20%285%29.svg)
 
 ### Actors
 
@@ -45,7 +45,7 @@ Workloads in Akash are defined as Docker containers. Docker containers allow for
 7. If a datacenter fails to maintain a lease, collateral is transferred to the tenant and a new order is created for the desired resources.
 8. A tenant can close any active deployment at any time
 
-![Summary of procurement from Marketplace. \(1\) User&apos;s deployment order is posted to the orderbook \(2\) Datacenters posts eligible fulfillment orders for the deployment order \(3\) The best fulfillment order is matched with the deployment order, creating a new lease. ](.gitbook/assets/marketplace%20%283%29.svg)
+![Summary of procurement from Marketplace. \(1\) User&apos;s deployment order is posted to the orderbook \(2\) Datacenters posts eligible fulfillment orders for the deployment order \(3\) The best fulfillment order is matched with the deployment order, creating a new lease. ](.gitbook/assets/marketplace%20%283%29%20%283%29.svg)
 
 Infrastructure procurement --- the process through which clients lease infrastructure from providers --- on Akash it is implemented through a decentralized exchange \(_marketplace_\).
 
