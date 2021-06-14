@@ -8,7 +8,7 @@ You'll need to know information about the network you're connecting your node to
 
 Make sure to have Akash client installed on your workstation, check [install guide](install.md) for instructions.
 
-You'll need a key to use for your account and your account address handy. See the [wallet guide](https://github.com/ovrclk/docs/tree/9ba5597d7a6d9df65c8de647b52806904d25d845/guides/wallet.md) for how to set this up.
+You'll need a key to use for your account and your account address handy. See the [wallet guide](wallet.md) for how to set this up.
 
 #### Shell Variables Required
 
@@ -16,7 +16,7 @@ You'll need a key to use for your account and your account address handy. See th
 | :--- | :--- |
 | `AKASH_NET` | Akash network configuration base URL. See [here](version.md). |
 | `AKASH_NODE` | Akash network configuration base URL. See [here](version.md). |
-| `ACCOUNT_ADDRESS` | The address of your account.  See [here](wallet.md#account-address). |
+| `AKASH_ACCOUNT_ADDRESS` | The address of your account.  See [here](wallet.md#account-address). |
 
 ## Funding Method
 
@@ -36,7 +36,7 @@ Go to the resulting URL and enter your account address; you should see tokens in
 
 **`mainnet`-only**
 
-Tokens may currently be purchased on bitmax.io. From there you can withdraw tokens to your address.
+Tokens may currently be purchased on exchanges listed [here](https://akash.network/token). From there you can withdraw tokens to your address.
 
 ### Check Balance
 
@@ -45,7 +45,7 @@ Check your account balance with
 ```bash
 akash \
   --node "$AKASH_NODE" \
-  query bank balances "$ACCOUNT_ADDRESS"
+  query bank balances "$AKASH_ACCOUNT_ADDRESS"
 ```
 
 You should see a non-zero entry containing `uakt` tokens!
